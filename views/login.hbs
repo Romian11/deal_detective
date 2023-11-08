@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log In</title>
+    <link rel="stylesheet" href="/login page/css/login.css" />
+    <link rel="shortcut icon" href="./image/OIP.jpeg" type="image/jpeg">
+  </head>
+  <body>
+    <div class="box">
+      <span class="borderline"></span>
+      <form onsubmit="login(event)" >
+        <h2 id="login">Log in</h2>
+        <div class="inputbox">
+          <input type="text" required="required" id="email" autocomplete="new-password"/>
+          <span>Email</span>
+          <i></i>
+        </div>
+        <div class="inputbox">
+          <input type="password" required="required" id="password" />
+          <span>Password</span>
+          <i></i>
+        </div>
+        <div class="links">
+          <a href="./forgetpassword" id="forget_psswrd">Forget Password</a>
+          <a href="./signup" id="signup">Sign Up</a>
+        </div>
+        <input type="submit" onclick="signin()" value="Login" id="submitbtn" />
+      </form>
+    </div>
+  </body>
+  <script src="/login page/js/login.js" type="module"></script>
+</html>

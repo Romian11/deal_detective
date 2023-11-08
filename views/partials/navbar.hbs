@@ -1,0 +1,56 @@
+  
+ <div class="backgroung_circles">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c3"></div>
+    <div class="c4"></div>
+   </div>
+   <div class="navbar">
+    {{!-- image/th-removebg-preview.png --}}
+     <div class="logo" onclick="return_home()"><img src="{{src}}" alt="Logo" srcset=""><span>Deal Detective</span></div>
+
+     <div class="search_bar_products">
+ <div class="searchbar">
+        <span class="search">
+      <input type="text" placeholder="search For Products Brands And More" name="input" id="search_bar">
+     <i class="fa fa-search" aria-hidden="true" id="search_icon" onclick="search_item()" style="color: black;"></i></i>
+        </span>
+     </div>
+     <div class="shortcuts">
+    <ul class="clickable" onclick="add(phone)">
+  <li>
+    <i class="fa fa-mobile" aria-hidden="true" id="phone"></i>
+    Mobile
+  </li>
+</ul>
+
+<ul class="clickable" onclick="add(laptop)">
+  <li>
+    <i class="fa fa-laptop" aria-hidden="true" id="laptop"></i>
+    Laptop
+  </li>
+</ul>
+      <ul class="clickable" onclick="add(TV)">
+  <li>
+    <i class="fa fa-television" aria-hidden="true" id="TV"></i> T.V
+  </li>
+</ul>
+<ul class="clickable" onclick="add(Moniter)">
+  <li>
+   <i class="fa fa-desktop" aria-hidden="true" id="Moniter"></i> Monitor  </li>
+</ul>
+<ul class="clickable" onclick="add(camera)">
+  <li>
+    <i class="fa fa-camera" aria-hidden="true" id="camera"></i> camera
+</ul>
+  </div>
+     </div>
+    
+
+        <div class="buttons_login">
+            <button id="btn_signup">Login</button>
+            <button id="btn_login">signup</button>
+            <div class="logout" id="logout_btn">{{>login_btn website = 'logout'}}</div>
+        </div>
+   </div>
+  

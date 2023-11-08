@@ -1,0 +1,48 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/d43f8287d5.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
+    {{!-- <link rel="stylesheet" href="/home page/css/home.css"> --}}
+    <link rel="stylesheet" href="/home page/css/style.css">
+    <link rel="shortcut icon" href="../th-removebg-preview.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../image/OIP.jpeg" type="image/jpeg">
+    <title>Document</title>
+</head>
+<body>
+
+ {{>navbar src = "../image/th-removebg-preview.png"}}
+  <div class="title">
+    {{f_title}}
+</div>
+  <div class="product_container">
+    <div class="img_box"><img src="{{f_image}}"alt="product image" srcset="">
+    </div>
+        <div class="container1">
+        <div class="box1">
+        <div class="title1">{{f_title}}</div>
+        <span class="raiting1">{{f_rating}}</span><div></div>        
+        <div class="one">
+  <span class="price1">{{f_price}}</span>
+  <span class="buy_btn" onclick="opensite('{{f_link}}')" >{{>buy_btn website = 'Flipkart'}}</span>
+        </div>
+    </div>
+        <div class="box1">
+        <div class="title1">{{a_title}}</div>
+        <span class="raiting1">{{a_rating}}</span>
+        <div></div>
+        <div class="one" >
+<span class="price1"><i class="fa fa-inr fa-1.5x" aria-hidden="true"></i>{{a_price}}</span>    
+        {{!-- <button id="buy_btn2" class="buy_btn" ')"></button> --}}
+        <span class="buy_btn" onclick="opensite('{{a_link}}')">{{>buy_btn website = 'Amazon'}}</span>
+        </div>
+    </div>
+    </div> 
+  </div>
+  <script src="../home page/js/compare.js"></script>
+</body>
+
+</html>

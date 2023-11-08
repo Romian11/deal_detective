@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CodePen - Custom Tooltip</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      :root {
+        --color-light: rgb(203 213 225);
+        --color-mid: rgb(213, 219, 226);
+        --color-dark: rgb(0, 0, 0);
+
+      }
+      body {
+      
+        color: var(--color-light);
+        font-family: sans-serif;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+      }
+     
+      .iconDiv {
+        height: 36px;
+        width: 40px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 4px;
+        padding: 4px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: pointer;
+        transition: width 300ms ease-in-out 0s,
+        background-color 300ms linear 200ms;
+      }
+      .iconSVG {
+        height: 36px;
+        aspect-ratio: 1 / 1;
+      }
+      .iconDiv:hover,
+      .iconDiv:focus-visible  {
+        width: 115px;
+        color: black;
+        background-color: var(--color-mid);
+        transition: width 300ms ease-in-out 0s, background-color 100ms linear 0s;
+      }
+      .iconDiv:focus-visible {
+        outline: 1px solid var(--color-mid);
+        outline-offset: 4px;
+      }
+      .iconDiv:active {
+        opacity: 0.9;
+      }
+      .iconDiv::after {
+        content: attr(tooltip);
+        margin-left: 12px;
+        -webkit-animation: fadeIn 600ms linear forwards;
+        animation: fadeIn 600ms linear forwards;
+      }
+      .spacer {
+        flex-grow: 1;
+      }
+      .divider {
+        height: 36px;
+        width: 1px;
+        margin: 24px 18px;
+        background-color: var(--color-dark);
+      }
+
+      @-webkit-keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+        
+      }
+    @media (max-width: 1173px) {
+          body{
+            font-size: 12px;
+          }
+          .iconDiv,
+      .iconDiv:focus-visible  {
+           width: 87px;
+    height: 29px;
+    margin-top: 30px;
+    color: black;
+    background-color: var(--color-mid);
+  
+      }
+        .iconSVG {
+        height: 15px;
+        aspect-ratio: 1 / 1;
+      }
+  }
+      
+    </style>
+  </head>
+  <body>
+  
+    <div id="wrapper">
+       <header>
+      <div class="iconDiv" tooltip="{{website}}" tabindex="0">
+        <div class="iconSVG">
+         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+</svg>
+        </div>
+      </div>
+      </header> 
+    </div>
+  </body>
+</html>
