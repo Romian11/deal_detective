@@ -22,7 +22,10 @@ const exphbs = require("express-handlebars");
 const { url } = require("inspector");
 // const { hasClass } = require("cheerio/lib/api/attributes");
 app.set("view engine", "hbs");
-
+const headers = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+};
 app.get("/", (req, res) => {
   const url = `https://www.flipkart.com/search`;
   axios
@@ -84,10 +87,7 @@ app.get("/", (req, res) => {
     });
 });
 
-const headers = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
-};
+
 
 const product = [];
 // console.log(product);
