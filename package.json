@@ -5,7 +5,7 @@
   "dependencies": {
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^4.3.0",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "body": "^5.1.0",
     "cheerio": "^1.0.0-rc.12",
     "cliui": "^7.0.4",
