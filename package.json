@@ -30,6 +30,7 @@
     "path": "^0.12.7",
     "prompt-sync": "^4.2.0",
     "protobufjs": "^6.11.3",
+    "puppeteer": "^22.7.1",
     "require-directory": "^2.1.1",
     "safe-buffer": "^5.2.1",
     "string-width": "^4.2.3",

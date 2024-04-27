@@ -39,72 +39,49 @@ const headers2 = {
 };
 
 
-app.get("/", (req, res) => {
-  const url = `https://www.flipkart.com/search`;
-  axios
-    .get(url , { headers: headers })
-    .then((response) => {
-      
-      if (response.status === 200) {
-        const $ = cheerio.load(response.data);
-          console.log($);
-        const products = [];
-        $("div[data-id]")
-          .map((index, element) => {
-            // const title1 = $(element).find('div[class*="_4rR01T"]').text();
-            // const title1 = $(element).find('div[class*="WKTcLC"]').text();
-            // const title2 = $(element).find(".IRpwTa").text();
-            const title2 = $(element).find("WKTcLC").text();
+const puppeteer = require('puppeteer');
 
-            // const title3 = $(element).find(".s1Q9rs").text();
-            const title1 = $(element).find("a.WKTcLC").text();
-            const title3 = $(element).find("a.wjcEIp").text();
-              
-            const isValidTitle1 = title1 && title1.trim() !== "";
-            const isValidTitle2 = title2 && title2.trim() !== "";
+app.get("/", async (req, res) => {
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto('https://www.flipkart.com/search');
 
-            const productTitle = isValidTitle1
-              ? title1
-              : isValidTitle2
-              ? title2
-              : title3;
-            const title = productTitle;
+    const products = await page.evaluate(() => {
+      const productsArray = [];
+      const productElements = document.querySelectorAll('div[data-id]');
 
-            // const price = $(element).find('div._30jeq3._16Jk6d').text();
-            const price = $(element).find('div.Nx9bqj').text();
-            const image = $(element).find("img[src]").attr("src");
-            const rating = $(element).find('div[class*="XQDdHH"]').text();
-            const halflink = $(element).find("a.VJA3rP").attr("href");
-            const halflink2 = $(element).find("a.s1Q9rs").attr("href");
-            const halflink3 = $(element).find("a._2UzuFa").attr("href");
-            const halflink4 = $(element)
-              .find('div[class*="_4rR01T"]')
-              .attr("href");
-            const isValidLink = halflink && halflink.trim() !== "";
-            const isValidLink2 = halflink2 && halflink2.trim() !== "";
-            const isValidLink3 = halflink3 && halflink3.trim() !== "";
-            const productLink = isValidLink
-              ? halflink
-              : isValidLink2
-              ? halflink2
-              : isValidLink3
-              ? halflink3
-              : halflink4;
-            const link = "https://www.flipkart.com" + productLink;
+      productElements.forEach(element => {
+        const titleElement = element.querySelector('a.WKTcLC') || element.querySelector('div.WKTcLC');
+        const title = titleElement ? titleElement.textContent.trim() : '';
 
-            products.push({ title, price, image, rating, link });
-          })
-          .get();
+        const priceElement = element.querySelector('div.Nx9bqj');
+        const price = priceElement ? priceElement.textContent.trim() : '';
 
-        res.render("index.hbs", { products });
-      } else {
-        res.status(response.status).send("Request failed");
-      }
-    })
-    .catch((error) => {
-      res.status(500).send(error);
+        const imageElement = element.querySelector('img[src]');
+        const image = imageElement ? imageElement.getAttribute('src') : '';
+
+        const ratingElement = element.querySelector('div[class*="XQDdHH"]');
+        const rating = ratingElement ? ratingElement.textContent.trim() : '';
+
+        const linkElement = element.querySelector('a.VJA3rP') || element.querySelector('a.s1Q9rs') || element.querySelector('a._2UzuFa') || element.querySelector('div[class*="_4rR01T"]');
+        const link = linkElement ? 'https://www.flipkart.com' + linkElement.getAttribute('href') : '';
+
+        productsArray.push({ title, price, image, rating, link });
+      });
+
+      return productsArray;
     });
+
+    await browser.close();
+
+    res.render("index.hbs", { products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
 });
+
 
 const product = [];
 // console.log(product);
