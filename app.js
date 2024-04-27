@@ -51,6 +51,7 @@ puppeteer.use(StealthPlugin());
 
 // app.get("/", async (req, res) => {
 //   try {
+  // C:\Users\sahil\.cache\puppeteer\chrome-headless-shell\win64-124.0.6367.78
 //     const browser = await puppeteer.launch({ headless: false });
 //     const page = await browser.newPage();
 //     await page.goto("https://www.flipkart.com/search");
