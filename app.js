@@ -37,16 +37,15 @@ const headers2 = {
   "Accept-Encoding": "gzip, deflate, br",
   "Connection": "keep-alive",
 };
-
-
 const puppeteer = require('puppeteer');
 
 app.get("/", async (req, res) => {
   try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto('https://www.flipkart.com/search');
+    const browser = await puppeteer.launch({ headless: true }); // Launch Puppeteer
+    const page = await browser.newPage(); // Create a new page instance
+    await page.goto('https://www.flipkart.com/search'); // Navigate to the Flipkart search page
 
+    // Extract product data using Puppeteer
     const products = await page.evaluate(() => {
       const productsArray = [];
       const productElements = document.querySelectorAll('div[data-id]');
@@ -73,15 +72,14 @@ app.get("/", async (req, res) => {
       return productsArray;
     });
 
-    await browser.close();
+    await browser.close(); // Close the Puppeteer browser instance
 
-    res.render("index.hbs", { products });
+    res.render("index.hbs", { products }); // Render the extracted products in the template
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
   }
 });
-
 
 const product = [];
 // console.log(product);
