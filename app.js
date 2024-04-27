@@ -49,55 +49,104 @@ const { executablePath } = require("puppeteer");
 // Add the stealth plugin
 puppeteer.use(StealthPlugin());
 
-app.get("/", async (req, res) => {
-  try {
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    await page.goto("https://www.flipkart.com/search");
+  // app.get("/", async (req, res) => {
+  //   try {
+  //     const browser = await puppeteer.launch({ headless: false });
+  //     const page = await browser.newPage();
+  //     await page.goto("https://www.flipkart.com/search");
 
-    const products = await page.evaluate(() => {
-      const productsArray = [];
-      const productElements = document.querySelectorAll("div[data-id]");
+  //     const products = await page.evaluate(() => {
+  //       const productsArray = [];
+  //       const productElements = document.querySelectorAll("div[data-id]");
 
-      productElements.forEach((element) => {
-        const titleElement =
-          element.querySelector("a.WKTcLC") ||
-          element.querySelector("div.WKTcLC");
-        const title = titleElement ? titleElement.textContent.trim() : "";
+  //       productElements.forEach((element) => {
+  //         const titleElement =
+  //           element.querySelector("a.WKTcLC") ||
+  //           element.querySelector("div.WKTcLC");
+  //         const title = titleElement ? titleElement.textContent.trim() : "";
 
-        const priceElement = element.querySelector("div.Nx9bqj");
-        const price = priceElement ? priceElement.textContent.trim() : "";
+  //         const priceElement = element.querySelector("div.Nx9bqj");
+  //         const price = priceElement ? priceElement.textContent.trim() : "";
 
-        const imageElement = element.querySelector("img[src]");
-        const image = imageElement ? imageElement.getAttribute("src") : "";
+  //         const imageElement = element.querySelector("img[src]");
+  //         const image = imageElement ? imageElement.getAttribute("src") : "";
 
-        const ratingElement = element.querySelector('div[class*="XQDdHH"]');
-        const rating = ratingElement ? ratingElement.textContent.trim() : "";
+  //         const ratingElement = element.querySelector('div[class*="XQDdHH"]');
+  //         const rating = ratingElement ? ratingElement.textContent.trim() : "";
 
-        const linkElement =
-          element.querySelector("a.VJA3rP") ||
-          element.querySelector("a.s1Q9rs") ||
-          element.querySelector("a._2UzuFa") ||
-          element.querySelector('div[class*="_4rR01T"]');
-        const link = linkElement
-          ? "https://www.flipkart.com" + linkElement.getAttribute("href")
-          : "";
+  //         const linkElement =
+  //           element.querySelector("a.VJA3rP") ||
+  //           element.querySelector("a.s1Q9rs") ||
+  //           element.querySelector("a._2UzuFa") ||
+  //           element.querySelector('div[class*="_4rR01T"]');
+  //         const link = linkElement
+  //           ? "https://www.flipkart.com" + linkElement.getAttribute("href")
+  //           : "";
 
-        productsArray.push({ title, price, image, rating, link });
-      });
+  //         productsArray.push({ title, price, image, rating, link });
+  //       });
 
-      return productsArray;
-    });
+  //       return productsArray;
+  //     });
 
-    await browser.close();
+  //     await browser.close();
 
-    res.render("index.hbs", { products });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error.message);
-  }
-});
+  //     res.render("index.hbs", { products });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).send(error.message);
+  //   }
+  // });
 
+app.get('/' , async(req,res)=>{
+  const browser = await puppeteer.launch({
+    headless:false,
+    defaultViewport:false,
+    userDataDir:"./tmp"
+  });
+  const page = await browser.newPage();
+
+  // Navigate the page to a URL
+  await page.goto('https://www.flipkart.com/search');
+  const products = await page.evaluate(() => {
+          const productsArray = [];
+          const productElements = document.querySelectorAll("div[data-id]");
+  
+          productElements.forEach((element) => {
+            const titleElement =
+              element.querySelector("a.WKTcLC") ||
+              element.querySelector("div.WKTcLC");
+            const title = titleElement ? titleElement.textContent.trim() : "";
+  
+            const priceElement = element.querySelector("div.Nx9bqj");
+            const price = priceElement ? priceElement.textContent.trim() : "";
+  
+            const imageElement = element.querySelector("img[src]");
+            const image = imageElement ? imageElement.getAttribute("src") : "";
+  
+            const ratingElement = element.querySelector('div[class*="XQDdHH"]');
+            const rating = ratingElement ? ratingElement.textContent.trim() : "";
+  
+            const linkElement =
+              element.querySelector("a.VJA3rP") ||
+              element.querySelector("a.s1Q9rs") ||
+              element.querySelector("a._2UzuFa") ||
+              element.querySelector('div[class*="_4rR01T"]');
+            const link = linkElement
+              ? "https://www.flipkart.com" + linkElement.getAttribute("href")
+              : "";
+  
+            productsArray.push({ title, price, image, rating, link });
+          });
+  
+          return productsArray;
+        });
+  
+        await browser.close();
+  
+        res.render("index.hbs", { products });
+})
+  
 const product = [];
 // console.log(product);
 app.get("/search", (req, res) => {
