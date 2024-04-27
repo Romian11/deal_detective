@@ -8,6 +8,8 @@ const fs = require("fs");
 const port = process.env.PORT || 3000;
 const { URL } = require("url");
 const querystring = require("querystring");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
 const partial_path = path.join(__dirname, "./views/partials");
 app.use(express.static("./public"));
@@ -22,49 +24,64 @@ const exphbs = require("express-handlebars");
 const { url } = require("inspector");
 app.set("view engine", "hbs");
 const headers = {
-  "Host": "www.flipkart.com",
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3",
-  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+  Host: "www.flipkart.com",
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3",
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
   "Accept-Language": "en-US,en;q=0.9",
   "Accept-Encoding": "gzip, deflate, br",
-  "Connection": "keep-alive",
+  Connection: "keep-alive",
 };
 const headers2 = {
-  "Host": "www.amazon.co.in",
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3",
-  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+  Host: "www.amazon.co.in",
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3",
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
   "Accept-Language": "en-US,en;q=0.9",
   "Accept-Encoding": "gzip, deflate, br",
-  "Connection": "keep-alive",
+  Connection: "keep-alive",
 };
-const puppeteer = require('puppeteer');
+
+// import { browser } from "puppeteer";
+const { executablePath } = require("puppeteer");
+// Add the stealth plugin
+puppeteer.use(StealthPlugin());
 
 app.get("/", async (req, res) => {
   try {
-    const browser = await puppeteer.launch({ headless: true }); // Launch Puppeteer
-    const page = await browser.newPage(); // Create a new page instance
-    await page.goto('https://www.flipkart.com/search'); // Navigate to the Flipkart search page
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    await page.goto("https://www.flipkart.com/search");
 
-    // Extract product data using Puppeteer
     const products = await page.evaluate(() => {
       const productsArray = [];
-      const productElements = document.querySelectorAll('div[data-id]');
+      const productElements = document.querySelectorAll("div[data-id]");
 
-      productElements.forEach(element => {
-        const titleElement = element.querySelector('a.WKTcLC') || element.querySelector('div.WKTcLC');
-        const title = titleElement ? titleElement.textContent.trim() : '';
+      productElements.forEach((element) => {
+        const titleElement =
+          element.querySelector("a.WKTcLC") ||
+          element.querySelector("div.WKTcLC");
+        const title = titleElement ? titleElement.textContent.trim() : "";
 
-        const priceElement = element.querySelector('div.Nx9bqj');
-        const price = priceElement ? priceElement.textContent.trim() : '';
+        const priceElement = element.querySelector("div.Nx9bqj");
+        const price = priceElement ? priceElement.textContent.trim() : "";
 
-        const imageElement = element.querySelector('img[src]');
-        const image = imageElement ? imageElement.getAttribute('src') : '';
+        const imageElement = element.querySelector("img[src]");
+        const image = imageElement ? imageElement.getAttribute("src") : "";
 
         const ratingElement = element.querySelector('div[class*="XQDdHH"]');
-        const rating = ratingElement ? ratingElement.textContent.trim() : '';
+        const rating = ratingElement ? ratingElement.textContent.trim() : "";
 
-        const linkElement = element.querySelector('a.VJA3rP') || element.querySelector('a.s1Q9rs') || element.querySelector('a._2UzuFa') || element.querySelector('div[class*="_4rR01T"]');
-        const link = linkElement ? 'https://www.flipkart.com' + linkElement.getAttribute('href') : '';
+        const linkElement =
+          element.querySelector("a.VJA3rP") ||
+          element.querySelector("a.s1Q9rs") ||
+          element.querySelector("a._2UzuFa") ||
+          element.querySelector('div[class*="_4rR01T"]');
+        const link = linkElement
+          ? "https://www.flipkart.com" + linkElement.getAttribute("href")
+          : "";
 
         productsArray.push({ title, price, image, rating, link });
       });
@@ -72,9 +89,9 @@ app.get("/", async (req, res) => {
       return productsArray;
     });
 
-    await browser.close(); // Close the Puppeteer browser instance
+    await browser.close();
 
-    res.render("index.hbs", { products }); // Render the extracted products in the template
+    res.render("index.hbs", { products });
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);
@@ -111,7 +128,7 @@ app.get("/search", (req, res) => {
             const price = $(element).find('div[class*="Nx9bqj"]').text();
             const image = $(element).find("img[src]").attr("src");
             var rating = $(element).find('div[class*="XQDdHH"]').text();
-            if(rating=="")rating = "unavailable"
+            if (rating == "") rating = "unavailable";
             const halflink = $(element).find("a.CGtC98").attr("href");
             const halflink2 = $(element).find("a.rPDeLR").attr("href");
             const halflink3 = $(element).find("a._2UzuFa").attr("href");
@@ -161,7 +178,7 @@ app.get("/forgetpassword", (req, res) => {
 app.get("/compare", (req, res) => {
   const input = req.query.title;
   const link = req.query.link;
-  
+
   fetchDataFromAmazonAndFlipkart(link, input);
   async function fetchDataFromAmazonAndFlipkart(link) {
     try {
@@ -192,7 +209,7 @@ app.get("/compare", (req, res) => {
 
       const price = $('div[class*="Nx9bqj CxhGGd"]').eq(0).text();
       var rating = $('div[class*="XQDdHH"]').eq(0).text();
-      rating = rating + " out of 5 starts"
+      rating = rating + " out of 5 starts";
       var image1 = $("img.DByuf4.IZexXJ.jLEJ7H").attr("src");
 
       const cheerioobj = $("div.CXW8mj._3nMexc img._396cs4._2amPTt._3qGmMb");

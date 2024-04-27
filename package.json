@@ -31,6 +31,8 @@
     "prompt-sync": "^4.2.0",
     "protobufjs": "^6.11.3",
     "puppeteer": "^22.7.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "require-directory": "^2.1.1",
     "safe-buffer": "^5.2.1",
     "string-width": "^4.2.3",
