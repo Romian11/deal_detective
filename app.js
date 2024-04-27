@@ -5,7 +5,7 @@ const hbs = require("hbs");
 const path = require("path");
 const app = express();
 const fs = require("fs");
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 const { URL } = require("url");
 const querystring = require("querystring");
 
@@ -20,27 +20,46 @@ app.set("views", path.join(__dirname, "./views"));
 
 const exphbs = require("express-handlebars");
 const { url } = require("inspector");
-// const { hasClass } = require("cheerio/lib/api/attributes");
 app.set("view engine", "hbs");
 const headers = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+  "Host": "www.flipkart.com",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Accept-Encoding": "gzip, deflate, br",
+  "Connection": "keep-alive",
 };
+const headers2 = {
+  "Host": "www.amazon.co.in",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Accept-Encoding": "gzip, deflate, br",
+  "Connection": "keep-alive",
+};
+
+
 app.get("/", (req, res) => {
   const url = `https://www.flipkart.com/search`;
   axios
-    .get(url)
+    .get(url , { headers: headers })
     .then((response) => {
+      
       if (response.status === 200) {
         const $ = cheerio.load(response.data);
-
+          console.log($);
         const products = [];
         $("div[data-id]")
           .map((index, element) => {
-            const title1 = $(element).find('div[class*="_4rR01T"]').text();
-            const title2 = $(element).find(".IRpwTa").text();
-            const title3 = $(element).find(".s1Q9rs").text();
+            // const title1 = $(element).find('div[class*="_4rR01T"]').text();
+            // const title1 = $(element).find('div[class*="WKTcLC"]').text();
+            // const title2 = $(element).find(".IRpwTa").text();
+            const title2 = $(element).find("WKTcLC").text();
 
+            // const title3 = $(element).find(".s1Q9rs").text();
+            const title1 = $(element).find("a.WKTcLC").text();
+            const title3 = $(element).find("a.wjcEIp").text();
+              
             const isValidTitle1 = title1 && title1.trim() !== "";
             const isValidTitle2 = title2 && title2.trim() !== "";
 
@@ -50,11 +69,12 @@ app.get("/", (req, res) => {
               ? title2
               : title3;
             const title = productTitle;
-            
-            const price = $(element).find('div[class*="_30jeq3"]').text();
+
+            // const price = $(element).find('div._30jeq3._16Jk6d').text();
+            const price = $(element).find('div.Nx9bqj').text();
             const image = $(element).find("img[src]").attr("src");
-            const rating = $(element).find('div[class*="_3LWZlK"]').text();
-            const halflink = $(element).find("a._1fQZEK").attr("href");
+            const rating = $(element).find('div[class*="XQDdHH"]').text();
+            const halflink = $(element).find("a.VJA3rP").attr("href");
             const halflink2 = $(element).find("a.s1Q9rs").attr("href");
             const halflink3 = $(element).find("a._2UzuFa").attr("href");
             const halflink4 = $(element)
@@ -83,11 +103,8 @@ app.get("/", (req, res) => {
     })
     .catch((error) => {
       res.status(500).send(error);
-   
     });
 });
-
-
 
 const product = [];
 // console.log(product);
@@ -95,7 +112,7 @@ app.get("/search", (req, res) => {
   const input = req.query.query;
   const url = `https://www.flipkart.com/search?q=${input}`;
   axios
-    .get(url)
+    .get(url, { headers: headers })
     .then((response) => {
       if (response.status === 200) {
         const $ = cheerio.load(response.data);
@@ -103,8 +120,8 @@ app.get("/search", (req, res) => {
         const products = $("div[data-id]")
           .map((index, element) => {
             const title1 = $(element).find('div[class*="_4rR01T"]').text();
-            const title2 = $(element).find(".IRpwTa").text();
-            const title3 = $(element).find(".s1Q9rs").text();
+            const title2 = $(element).find(".KzDlHZ").text();
+            const title3 = $(element).find(".WKTcLC").text();
 
             const isValidTitle1 = title1 && title1.trim() !== "";
             const isValidTitle2 = title2 && title2.trim() !== "";
@@ -116,11 +133,12 @@ app.get("/search", (req, res) => {
               : title3;
             const title = productTitle;
 
-            const price = $(element).find('div[class*="_30jeq3"]').text();
+            const price = $(element).find('div[class*="Nx9bqj"]').text();
             const image = $(element).find("img[src]").attr("src");
-            const rating = $(element).find('div[class*="_3LWZlK"]').text();
-            const halflink = $(element).find("a._1fQZEK").attr("href");
-            const halflink2 = $(element).find("a.s1Q9rs").attr("href");
+            var rating = $(element).find('div[class*="XQDdHH"]').text();
+            if(rating=="")rating = "unavailable"
+            const halflink = $(element).find("a.CGtC98").attr("href");
+            const halflink2 = $(element).find("a.rPDeLR").attr("href");
             const halflink3 = $(element).find("a._2UzuFa").attr("href");
             const halflink4 = $(element)
               .find('div[class*="_4rR01T"]')
@@ -150,7 +168,6 @@ app.get("/search", (req, res) => {
     })
     .catch((error) => {
       res.status(500).send(error);
-   
     });
 });
 
@@ -169,12 +186,12 @@ app.get("/forgetpassword", (req, res) => {
 app.get("/compare", (req, res) => {
   const input = req.query.title;
   const link = req.query.link;
-
+  
   fetchDataFromAmazonAndFlipkart(link, input);
   async function fetchDataFromAmazonAndFlipkart(link) {
     try {
       const [amazonResponse, flipkartResponse] = await axios.all([
-        axios.get(`https://www.amazon.in/s?k=${input}`, { headers: headers }),
+        axios.get(`https://www.amazon.in/s?k=${input}`, { headers: headers2 }),
         axios.get(link, {
           headers: headers,
         }),
@@ -184,7 +201,7 @@ app.get("/compare", (req, res) => {
       const $ = cheerio.load(flipkartResponse.data);
       var product = [];
 
-      const title1 = $(".B_NuCI").text();
+      const title1 = $("span.VU-ZEz").text();
       const title2 = $(".IRpwTa").text();
       const title3 = $(".s1Q9rs").text();
 
@@ -198,10 +215,10 @@ app.get("/compare", (req, res) => {
         : title3;
       const title = productTitle;
 
-      const price = $('div[class*="_30jeq3"]').eq(0).text();
-      const rating = $('div[class*="_3LWZlK"]').eq(0).text();
-
-      var image1 = $("img._2r_T1I._396QI4").attr("src");
+      const price = $('div[class*="Nx9bqj CxhGGd"]').eq(0).text();
+      var rating = $('div[class*="XQDdHH"]').eq(0).text();
+      rating = rating + " out of 5 starts"
+      var image1 = $("img.DByuf4.IZexXJ.jLEJ7H").attr("src");
 
       const cheerioobj = $("div.CXW8mj._3nMexc img._396cs4._2amPTt._3qGmMb");
       const isValidImage = cheerioobj.length != 0;
@@ -219,7 +236,7 @@ app.get("/compare", (req, res) => {
         rating: rating,
         link: link,
       });
- 
+
       const amazon_product = [];
       $1(".s-result-item").each((index, element) => {
         const amazon_title = $1(element).find("h2 span").text().trim();
@@ -228,7 +245,7 @@ app.get("/compare", (req, res) => {
           .first()
           .text()
           .trim();
-          
+
         const amazon_rating = $1(".a-icon-alt").eq(0).text();
         const url = $1(element).find("a.a-link-normal").attr("href");
         const amazon_link = "https://www.amazon.in/" + url;
@@ -288,7 +305,6 @@ app.get("/compare", (req, res) => {
       });
     } catch (error) {
       console.error("error" + error);
-      
     }
   }
 });

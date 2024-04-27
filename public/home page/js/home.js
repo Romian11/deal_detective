@@ -26,7 +26,7 @@ function login() {
     console.log("Redirecting to login");
     setTimeout(function () {
       window.location.href = "./login";
-    }, 60000);
+    }, 600000);
   }
 }
 login();
